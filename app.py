@@ -71,7 +71,7 @@ if "path_val" not in st.session_state:
 if "face_val" not in st.session_state:
     st.session_state.face_val = 0.0
 
-if "scale_width" not in st.session.state:
+if "scale_width" not in st.session_state:
     st.session_state.scale_width = 1080
     
 # 2. DEFINE THE CALLBACK FUNCTIONS (This handles the reset safely in the background)
