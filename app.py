@@ -71,10 +71,18 @@ if "path_val" not in st.session_state:
 if "face_val" not in st.session_state:
     st.session_state.face_val = 0.0
     
-if st.sidebar.button("🔄 Reset Angles to Zero", use_container_width=True):
+# 2. DEFINE THE CALLBACK FUNCTIONS (This handles the reset safely in the background)
+def reset_angles_callback():
     st.session_state["path_val"] = 0.0
     st.session_state["face_val"] = 0.0
-    st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
+
+def nudge_path(amount):
+    st.session_state["path_val"] = round(st.session_state["path_val"] + amount, 2)
+
+def nudge_face(amount):
+    st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
+
+
 
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
@@ -114,49 +122,40 @@ st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
 col1, col2, col3,col4 = st.columns([1, 2, 3, 1])
 with col1:
     st.subheader("Swing Inputs")
-    st.subheader("Swing Inputs")
     
     # --- CLUB PATH CONTROLS ---
-    # Create tiny horizontal side-by-side columns for the path nudge buttons
     path_btn1, path_btn2 = st.columns(2)
     with path_btn1:
-        if st.button("⬅️ Nudge Path Left", key="np_left"):
-            st.session_state.path_val = round(st.session_state.path_val - 0.05, 2)
+        st.button("⬅️ Nudge Path Left", key="np_left", on_click=nudge_path, args=(-0.1,))
     with path_btn2:
-        if st.button("➡️ Nudge Path Right", key="np_right"):
-            st.session_state.path_val = round(st.session_state.path_val + 0.05, 2)
+        st.button("➡️ Nudge Path Right", key="np_right", on_click=nudge_path, args=(0.1,))
             
-    # Connect the slider directly to the session_state memory
-    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=0.05, key="path_val")
+    # Connect the slider to the background memory key
+    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=0.1, key="path_val")
 
     st.write("---") # Visual divider
 
     # --- FACE ANGLE CONTROLS ---
-    # Create tiny horizontal side-by-side columns for the face nudge buttons
     face_btn1, face_btn2 = st.columns(2)
     with face_btn1:
-        if st.button("⬅️ Nudge Face Left", key="nf_left"):
-            st.session_state.face_val = round(st.session_state.face_val - 0.05, 2)
+        st.button("⬅️ Nudge Face Left", key="nf_left", on_click=nudge_face, args=(-0.1,))
     with face_btn2:
-        if st.button("➡️ Nudge Face Right", key="nf_right"):
-            st.session_state.face_val = round(st.session_state.face_val + 0.05, 2)
+        st.button("➡️ Nudge Face Right", key="nf_right", on_click=nudge_face, args=(0.1,))
             
-    # Connect the slider directly to the session_state memory
-    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=0.05, key="face_val")
+    # Connect the slider to the background memory key
+    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=0.1, key="face_val")
 
     st.write("---") # Visual divider
     
-    # # --- GLOBAL RESET BUTTON ---
-    # if st.button("🔄 Reset Angles to Zero", use_container_width=True):
-    #     st.session_state["path_val"] = 0.0
-    #     st.session_state["face_val"] = 0.0
-    #     st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
+    # --- INLINE GLOBAL RESET BUTTON ---
+    # This button now sits beautifully inside your main layout column without a sidebar!
+    st.button("🔄 Reset Angles to Zero", use_container_width=True, on_click=reset_angles_callback)
         
     
     
 with col3:
     st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10, width=400)
     
 
 
