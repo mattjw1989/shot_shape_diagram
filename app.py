@@ -172,7 +172,7 @@ with col1:
     
 with col3:
     st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 750, step =10, width=400)
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 1080, step =10, width=400)
     
 
 
