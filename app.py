@@ -77,7 +77,39 @@ with col3:
     st.subheader("Adjust Image Size")
     scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
     
+st.write("---")  # Adds a clean visual divider line
 
+with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"):
+    st.markdown("""
+    ### 🎯 The Goal: Hit a Predictable Draw or Fade
+    In golf physics, a ball's curvature is dictated entirely by the relationship between your **Club Path** and your **Face Angle** at the moment of impact.
+    
+    * **The Face Angle** dictates roughly 75% to 80% of where the ball *starts* (Launch Direction).
+    * **The Club Path** interacting with that face is what creates the spin axis tilt that makes the ball *curve*.
+
+    ---
+
+    ### 🔑 The Golden Rule: The 30% to 50% Sweet Spot
+    To hit a functional, controllable shot that curves back toward your target without over-hooking or blocking, aim for a **Face-to-Path ratio between 30% and 50%**.
+
+    #### 🟢 How to Simulate a Perfect Draw (In-to-Out Swing)
+    1. Set your **Club Path** to a positive value (e.g., `+6.0°` swinging out to the right).
+    2. Adjust your **Face Angle** so it sits between **30% and 50%** of that path number (e.g., `+2.0°` to `+3.0°`).
+    3. **The Result:** The ball launches safely to the right of your target, then gently draws back to the center of the green.
+
+    #### 🔵 How to Simulate a Perfect Fade (Out-to-In Swing)
+    1. Set your **Club Path** to a negative value (e.g., `-6.0°` swinging left).
+    2. Adjust your **Face Angle** so it stays between **30% and 50%** of that path (e.g., `-2.0°` to `-3.0°`).
+    3. **The Result:** The ball launches to the left, then fades cleanly back to the flag.
+
+    ---
+
+    ### ⚠️ What Happens When You Miss the Ratio?
+    * **Below 30% (The Over-Hook / Over-Slice):** The face is pointing too far away from your swing path. This tilts the spin axis aggressively, causing a violent hook or a massive slice that completely misses the green.
+    * **Above 50% (The Push / Pull Block):** The face angle is too close to your swing path. The ball will launch offline but won't have enough spin axis tilt to curve back toward the target line, leaving you stranded out wide.
+    
+    *Use the sliders above to see these rules in action!*
+    """)
 
 
 # rsz_fac = st.slider("Scale", min_value=0.1, max_value=1.0, value=0.3, step=0.01)
