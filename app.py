@@ -26,6 +26,7 @@ m2y = lambda meters: m2f(meters) / 3
 
 DKGRN = (30,125,10)
 RED = (0,0,255)
+DKRED = (0,0,128)
 BLUE = (255,0,0)
 MGTA = (255,0,255)
 BLK = (0,0,0)
@@ -463,7 +464,7 @@ class GolfTrajectoryGenerator:
         flag_tip = (self.pin_pos[0]-toint(0.04*ht),self.pin_pos[1]-toint(0.012*ht))
         for i in range(33,46):
             pt = (self.pin_pos[0]-i,self.pin_pos[1]-(i*2))
-            cv2.line(im,flag_tip,pt,(0,0,255),5)
+            cv2.line(im,flag_tip,pt,RED,5)
 
         
         # draw a dashed line down the center of the field
@@ -570,8 +571,8 @@ class GolfTrajectoryGenerator:
         path_rad = toint(0.125*ht)
         
         path_pt = [toint( 0.05*wd), toint( 0.8 * ht)]
-        cv2.circle(im,path_pt,path_rad,(0,0,255),4)
-        cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),(0,0,255),4)
+        cv2.circle(im,path_pt,path_rad,DKRED,4)
+        cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),DKRED,4)
         roi = im[toint( 0.8*ht)-(path_rad+10):toint( 0.8*ht)+(path_rad+10), :toint( 0.05*wd)-1]
         roi[:,:] = (30,125,10)
         
@@ -584,7 +585,7 @@ class GolfTrajectoryGenerator:
         path_y_pos = toint( (path_pt[1] + sin(ang)*path_rad))
         
         path_pos = (path_x_pos,path_y_pos)
-        cv2.circle(im,path_pos,15,(255,255,255),-1)
+        cv2.circle(im,path_pos,15,WHT,-1)
         
         path_pt[0] -= 40
         path_pt[1] -= 20
