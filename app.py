@@ -73,6 +73,7 @@ with col1:
     st.subheader("Swing Inputs")
     club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
     face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
     
 
 
@@ -556,7 +557,7 @@ class GolfTrajectoryGenerator:
         with col2:
             final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
             
-            st.image(final_rgb_image, width=500)
+            st.image(final_rgb_image, width=500)    
         
         # cv2.imshow("Trajectory",im)
         # x = cv2.waitKey(self.wk)
