@@ -451,7 +451,7 @@ class GolfTrajectoryGenerator:
         
         # draw the green
         # green and cup are also absurdly large - to show texture
-        green_radius = 28 # meters
+        green_radius = 25 # meters
         green_pxrad = toint(green_radius/self.mpp)    
         cv2.circle(im,self.pin_pos,green_pxrad,LTGRN,-1)
         cup_radius = 1.5 # meters
