@@ -67,18 +67,6 @@ smash_factor_lookup = {
 
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
-st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
-col1, col2, col3 = st.columns([1, 2, 3])
-with col1:
-    st.subheader("Swing Inputs")
-    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
-    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
-with col3:
-    st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
-    
-st.write("---")  # Adds a clean visual divider line
-
 with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"):
     st.markdown("""
     ### 🎯 The Goal: Hit a Predictable Draw or Fade
@@ -110,6 +98,20 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
     
     *Use the sliders above to see these rules in action!*
     """)
+st.write("---")  # Adds a clean visual divider line
+st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
+col1, col2, col3 = st.columns([1, 2, 3])
+with col1:
+    st.subheader("Swing Inputs")
+    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+with col3:
+    st.subheader("Adjust Image Size")
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
+    
+
+
+
 
 
 # rsz_fac = st.slider("Scale", min_value=0.1, max_value=1.0, value=0.3, step=0.01)
