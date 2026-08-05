@@ -124,7 +124,7 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
     """)
 st.write("---")  # Adds a clean visual divider line
 st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
-col1, col2, col3,col4 = st.columns([1, 2, 3, 1])
+col1, col2 = st.columns([1, 4])
 nudge_val = 0.05
 
 with col1:
@@ -175,7 +175,7 @@ with col1:
         
     
     
-with col3:
+with col1:
     st.subheader("Adjust Image Size")
     scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 1080, step =10, key="scale_width")
     
