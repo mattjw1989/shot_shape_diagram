@@ -96,7 +96,7 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
     * **Below 30% (The Over-Hook / Over-Slice):** The face is pointing too far away from your swing path. This tilts the spin axis aggressively, causing a violent hook or a massive slice that completely misses the green.
     * **Above 50% (The Push / Pull Block):** The face angle is too close to your swing path. The ball will launch offline but won't have enough spin axis tilt to curve back toward the target line, leaving you stranded out wide.
     
-    *Use the sliders above to see these rules in action!*
+    *Use the sliders below to see these rules in action!*
     """)
 st.write("---")  # Adds a clean visual divider line
 st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
