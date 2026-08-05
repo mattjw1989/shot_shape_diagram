@@ -67,9 +67,9 @@ smash_factor_lookup = {
 
 
 if "path_val" not in st.session_state:
-    st.session_state.path_val = 6.0
+    st.session_state.path_val = 0.0
 if "face_val" not in st.session_state:
-    st.session_state.face_val = 2.1
+    st.session_state.face_val = 0.0
 
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
@@ -143,9 +143,10 @@ with col1:
     
     # --- GLOBAL RESET BUTTON ---
     if st.button("🔄 Reset Angles to Zero", use_container_width=True):
-        st.session_state.path_val = 0.0
-        st.session_state.face_val = 0.0
-        # st.rerun() # Forces an instant refresh to clear the screen layout
+        st.session_state["path_val"] = 0.0
+        st.session_state["face_val"] = 0.0
+        st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
+        
     
     
 with col3:
