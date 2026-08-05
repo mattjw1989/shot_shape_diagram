@@ -67,7 +67,7 @@ smash_factor_lookup = {
 
 club_path = st.slider("Club Path (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
 face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
-rsz_fac = st.slider("Scale", min_value=0.1, max_value=1.0, value=0.3, step=0.01)
+# rsz_fac = st.slider("Scale", min_value=0.1, max_value=1.0, value=0.3, step=0.01)
 
 class GolfTrajectoryGenerator:
     def __init__(self, theta_path, theta_face,re_init=False, wk=0):
@@ -542,7 +542,7 @@ class GolfTrajectoryGenerator:
         
         
         
-        im = cv2.resize(im,None, None, fx = rsz_fac, fy=rsz_fac)
+        # im = cv2.resize(im,None, None, fx = rsz_fac, fy=rsz_fac)
         
         final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
         
