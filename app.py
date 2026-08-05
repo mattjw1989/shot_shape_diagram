@@ -33,6 +33,8 @@ MGTA = (255,0,255)
 BLK = (0,0,0)
 WHT = (255,255,255)
 MDYLW = (0,160,160)
+MDGREY = (125,125,125)
+YLW = (0,255,255)
 
 LTGRN = (60,175,25)
 FILLED = -1
@@ -473,19 +475,19 @@ class GolfTrajectoryGenerator:
         jump = 100
         while True:
             if y_pos+150 >= ht:
-                cv2.line(im,(og_x,y_pos),(og_x,ht),(125,125,125),4)
+                cv2.line(im,(og_x,y_pos),(og_x,ht),MDGREY,4)
                 break
             else:
-                cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),(125,125,125),4)
+                cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),MDR,4)
             y_pos += 2 * jump
         
         
-        cv2.line(im,(og_x,og_y),(hld_x,hld_y),(0,255,255),2)
+        cv2.line(im,(og_x,og_y),(hld_x,hld_y),YLW,2)
         
         ldr_x = toint( hld_x + cos(radians(self.hld + 60))*30)
         ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
         
-        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
+        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),YLW,2)
         ldr_x = toint( hld_x - cos(radians(self.hld - 60))*30)
         ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
         
