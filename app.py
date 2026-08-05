@@ -145,7 +145,7 @@ with col1:
     if st.button("🔄 Reset Angles to Zero", use_container_width=True):
         st.session_state.path_val = 0.0
         st.session_state.face_val = 0.0
-        st.rerun() # Forces an instant refresh to clear the screen layout
+        # st.rerun() # Forces an instant refresh to clear the screen layout
     
     
 with col3:
