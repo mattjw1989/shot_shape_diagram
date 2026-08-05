@@ -84,14 +84,14 @@ def reset_angles_callback():
     st.session_state["face_val"] = 0.0
 
 def nudge_path(amount):
-    
-    if round(st.session_state["path_val"] + amount, 2) <= 15 and round(st.session_state["path_val"] + amount, 2) >= 0:
-        st.session_state["path_val"] = round(st.session_state["path_val"] + amount, 2)
+    adj_val = round(st.session_state["path_val"] + amount, 2)
+    if  adj_val <= 15 and adj_val >= -15:
+        st.session_state["path_val"] = adj_val
 
 def nudge_face(amount):
-    if round(st.session_state["face_val"] + amount, 2) <= 15 and round(st.session_state["face_val"] + amount, 2) >= 0:
-        st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
-    # st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
+    adj_val = round(st.session_state["face_val"] + amount, 2)
+    if  adj_val <= 15 and adj_val >= -15:
+        st.session_state["face_val"] = adj_val
 
 
 
@@ -164,7 +164,6 @@ with col1:
         st.button("⬅️ 0.05°", key="nf_left", on_click=nudge_face, args=(-nudge_val,))
     with face_btn2:
         st.button("0.05° ➡️", key="nf_right", on_click=nudge_face, args=(nudge_val,))
-    
     with face_btn3:
         st.button("⬅️ 1.0°", key="bnf_left", on_click=nudge_face, args=(-1.0,))
     with face_btn4:
