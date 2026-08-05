@@ -556,7 +556,7 @@ class GolfTrajectoryGenerator:
         with col2:
             final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
             
-            st.image(final_rgb_image, width='stretch')
+            st.image(final_rgb_image, width=500)
         
         # cv2.imshow("Trajectory",im)
         # x = cv2.waitKey(self.wk)
