@@ -137,16 +137,14 @@ with col1:
             
     # Connect the slider to the background memory key
     club_path = st.slider("Club Path (°)", min_value=-15.0, value=0.0, max_value=15.0, step=nudge_val, key="path_val")
-    path_btn1, path_btn2 = st.columns(2)
+    path_btn1, path_btn2, path_btn3, path_btn4= st.columns(2)
+    with path_btn3:
+        st.button("⬅️ 1.0°", key="bnp_left", on_click=nudge_path, args=(-1.0,))
     with path_btn1:
         st.button("⬅️ 0.05°", key="np_left", on_click=nudge_path, args=(-nudge_val,))
     with path_btn2:
         st.button("0.05°➡️ ", key="np_right", on_click=nudge_path, args=(nudge_val,))
-
-    path_btn3, path_btn4 = st.columns(2)
-    with path_btn1:
-        st.button("⬅️ 1.0°", key="bnp_left", on_click=nudge_path, args=(-1.0,))
-    with path_btn2:
+    with path_btn4:
         st.button("1.0° ➡️ ", key="bnp_right", on_click=nudge_path, args=(1.0,))
 
     st.write("---") # Visual divider
