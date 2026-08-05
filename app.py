@@ -124,7 +124,7 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
     """)
 st.write("---")  # Adds a clean visual divider line
 st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
-col1, col2 = st.columns([1.5, 3.5])
+col1, col2 = st.columns([1.25, 3.75])
 nudge_val = 0.05
 
 with col1:
