@@ -140,7 +140,7 @@ with col1:
 
     path_btn3, path_btn4 = st.columns(2)
     with path_btn1:
-        st.button("1.0° ⬅️", key="bnp_left", on_click=nudge_path, args=(-1.0,))
+        st.button("⬅️ 1.0°", key="bnp_left", on_click=nudge_path, args=(-1.0,))
     with path_btn2:
         st.button("1.0° ➡️ ", key="bnp_right", on_click=nudge_path, args=(1.0,))
 
