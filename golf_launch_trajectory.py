@@ -1,3 +1,5 @@
+import streamlit as st
+# import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
 from copy import copy
@@ -63,6 +65,9 @@ smash_factor_lookup = {
         "LW": 1.06    
     }
 
+club_path = st.slider("Club Path (degrees)", min_value=-15.0, max_value=15.0, value=6.0, step=0.05)
+face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=2.1, step=0.05)
+
 
 class GolfTrajectoryGenerator:
     def __init__(self, theta_path, theta_face,re_init=False, wk=0):
@@ -106,6 +111,8 @@ class GolfTrajectoryGenerator:
         self.ypos_arr = [0.0]
         self.zpos_arr = [0.0]
         self.shape_name = ""
+        self.theta_path = copy(club_path)
+        self.theta_face = copy(face_angle)
         self.calc_params()
         self.calc_initial_velocities()
         self.calculate_trajectory()
@@ -262,350 +269,295 @@ class GolfTrajectoryGenerator:
         
         
         self.classify_shot_shape()
-        if not self.data_start or self.wk == 0:
-            wd = 1080
-            ht = 1920
-            im = np.zeros((ht,wd,3)).astype("uint8")
-            
-            # color the whole image dark green to start
-            im[:,:] = DKGRN
-            
-            field_wd = toint(0.85 * wd)
-            field_ht = toint(0.8 * ht)
-            
-            og_x = toint(wd/2)
-            og_y = ht - toint(ht * 0.075)
-            
-            if not self.init_mpp:
-                # calculate meters per pixel based on 
-                mpp_wd = self.max_dev() * 2 / field_wd
-                mpp_ht = max(self.ypos_arr) / field_ht
-                self.mpp = max([mpp_wd, mpp_ht])
-                self.pin_pos = (og_x, og_y - toint( self.ypos_arr[-1] / self.mpp))
-                self.init_mpp = True
-                
-            
-            
-            
-            
-            
-            # draw the tee box
-            # it's absurdly big, get over it
-            tee_box_width = 25 # meters
-            tee_box_x1 = og_x - toint((tee_box_width/self.mpp))
-            tee_box_x2 = og_x + toint(tee_box_width/self.mpp)
-            
-            tee_box_len = 15 # meters
-            tee_box_y1 = og_y - toint((tee_box_len/self.mpp))
-            tee_box_y2 = og_y + toint(tee_box_len/self.mpp)
-            
-            # change the teebox area to a lighter green
-            tee_roi = im[tee_box_y1:tee_box_y2, tee_box_x1: tee_box_x2]
-            tee_roi[:,:] = LTGRN
-            
-            # draw the tee markers
-            tee_ht = len(tee_roi)
-            tee_wd = len(tee_roi[0])
-            
-            tee_marker_pos = (toint( tee_wd *0.1), toint( tee_ht/2))
-            cv2.circle(tee_roi,tee_marker_pos,15,BLUE, FILLED)
-            tee_marker_pos = (toint( tee_wd *0.9), toint( tee_ht/2))
-            cv2.circle(tee_roi,tee_marker_pos,15,BLUE, FILLED)
-            
-            
-            
-            # calculate the end point of the horizontal launch arrow
-            # og_x and og_y will change before we do this, just save them here
-            hld_x = toint( og_x + sin(radians(self.hld))*0.25 * ht)
-            hld_y = toint( og_y - cos(radians(self.hld))*0.25 * ht) 
-            
-            
-            # draw the green
-            # green and cup are also absurdly large - to show texture
-            green_radius = 28 # meters
-            green_pxrad = toint(green_radius/self.mpp)    
-            cv2.circle(im,self.pin_pos,green_pxrad,LTGRN,-1)
-            cup_radius = 1.5 # meters
-            cup_pxrad = toint(cup_radius/self.mpp)
-            cv2.circle(im,self.pin_pos,cup_pxrad,BLK,-1)
-            
-            # draw the pin
-            pin_top = (self.pin_pos[0]-toint(0.025*ht),self.pin_pos[1]-toint(0.05*ht))
-            cv2.line(im,self.pin_pos,pin_top,MDYLW,5)
-            
-            # draw the flag
-            flag_tip = (self.pin_pos[0]-toint(0.04*ht),self.pin_pos[1]-toint(0.012*ht))
-            for i in range(33,46):
-                pt = (self.pin_pos[0]-i,self.pin_pos[1]-(i*2))
-                cv2.line(im,flag_tip,pt,(0,0,255),5)
-
-            
-            # draw a dashed line down the center of the field
-            y_pos = self.pin_pos[1] - toint(ht * .110)
-            jump = 100
-            while True:
-                if y_pos+150 >= ht:
-                    cv2.line(im,(og_x,y_pos),(og_x,ht),(125,125,125),4)
-                    break
-                else:
-                    cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),(125,125,125),4)
-                y_pos += 2 * jump
-            
-            
-            cv2.line(im,(og_x,og_y),(hld_x,hld_y),(0,255,255),2)
-            
-            ldr_x = toint( hld_x + cos(radians(self.hld + 60))*30)
-            ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
-            
-            cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
-            ldr_x = toint( hld_x - cos(radians(self.hld - 60))*30)
-            ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
-            
-            cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
-            
-            
-            
-            
-            py, px = None, None
-            for i in range(len(self.xpos_arr)):
-                x = og_x + toint(self.xpos_arr[i]/self.mpp)
-                y = og_y - toint(self.ypos_arr[i]/self.mpp)
-                
-                if i > 0:
-                    cv2.line(im,(x,y),(px,py),MGTA,3)
-                
-                px = copy(x)
-                py = copy(y)
-
-            
-            # # maybe later - draw the side-view to see the apex
-            # apex_mpp = self.mpp*2
-            # apex_og_x = toint( (wd - field_wd)/2)
-            # apex_og_y = self.pin_pos[1] - toint(0.015*ht)
-            
-            # end_apex_x = apex_og_x + toint( self.ypos_arr[-1] / apex_mpp)
-            # while end_apex_x > toint( wd - (wd-field_wd) / 2):
-            #     apex_mpp *=1.01
-            #     end_apex_x = apex_og_x + toint( self.ypos_arr[-1] / apex_mpp)            
-            
-            
-            
-            # for i in range(len(self.xpos_arr)):
-            #     x = apex_og_x + toint( self.ypos_arr[i] / apex_mpp)
-            #     y = apex_og_y - toint( self.zpos_arr[i] / apex_mpp)
-            #     if i > 0:
-            #         cv2.line(im,(x,y),(px,py),MGTA,3)
-            #     px = copy(x)
-            #     py = copy(y)
-            # cv2.line(im,(apex_og_x,apex_og_y),(px,py),BLK,2)
-            
-            
-            # print(hld_x, hld_y)
-            
-            
-            
-            
-            ft = cv2.FONT_HERSHEY_SIMPLEX
-            clr = WHT
-            sz = 1.2
-            ypos = toint(0.35*ht)
-            jump = 45
-            face_to_path = self.theta_face - self.theta_path
-            pct = 100 * self.xpos_arr[-1] / self.ypos_arr[-1]
-            face_path_pct = 100 * self.theta_face / self.theta_path if abs(self.theta_path) >= 0.04 else "?"
-            texts = [
-                # f"Club: {self.club_name}",
-                f"Shot: {self.shape_name}",
-                f"Path: {self.theta_path:.2f} dg",
-                f"Face To Path: {face_to_path:.2f} dg",
-                f"Face: {self.theta_face:.2f} dg",
-                f"Face:Path: {face_path_pct:.2f} %" if abs(self.theta_path) >= 0.04 else "Face:Path: N/A %",
-                # f"Apex: {m2f(max(self.zpos_arr)):.2f} ft",
-                f"Carry: {m2y(max(self.ypos_arr)):.2f} yd",
-                f"Off-Center Pct: {pct:.2f}%",
-                f"Off-Center: {m2y(self.xpos_arr[-1]):.2f} yd",
-                f"Max Dev.: {self.max_dev():.2f} yd",
-                # f"Dyn. Loft: {self.dyn_loft:.2f} dg",
-                # f"Launch Ang: {self.vla:.2f} dg",
-                # f"Swing Speed: {self.swing_speed:.0f} mph",
-                # f"Smash Fac.: {self.smash_factor:.2f}",
-                # f"Ball Speed: {self.swing_speed * self.smash_factor:.0f} mph"
-                
-                
-            ]
-            for t in texts:
-                cv2.putText(im,t, (10,ypos),ft,sz,clr,2)
-                
-                ypos += jump
-            
-            
-            
-            
-            path_rad = toint(0.125*ht)
-            
-            path_pt = [toint( 0.05*wd), toint( 0.8 * ht)]
-            cv2.circle(im,path_pt,path_rad,(0,0,255),4)
-            cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),(0,0,255),4)
-            roi = im[toint( 0.8*ht)-(path_rad+10):toint( 0.8*ht)+(path_rad+10), :toint( 0.05*wd)-1]
-            roi[:,:] = (30,125,10)
-            
-            
-            
-            
-            ang = radians(self.theta_path)
-            
-            path_x_pos = toint( (path_pt[0] + cos(ang)*path_rad))
-            path_y_pos = toint( (path_pt[1] + sin(ang)*path_rad))
-            
-            path_pos = (path_x_pos,path_y_pos)
-            cv2.circle(im,path_pos,15,(255,255,255),-1)
-            
-            path_pt[0] -= 40
-            path_pt[1] -= 20
-            cv2.putText(im,"Club Path", path_pt,ft,1.4,(0,0,255),2)
-            path_pt[1] += 70
-            cv2.putText(im,"Club Face", path_pt,ft,1.4,(0,0,0),2)
-            
-            
-            
-            
-            
-            path_pos = (path_x_pos,path_y_pos)
-            cv2.putText(im,"Hztl Launch Dir", (675,path_pt[1]-55),ft,1.4,(0,255,255),3)
-            cv2.putText(im,f"{self.hld:.2f} dg", (675,path_pt[1]-10),ft,1.4,(0,255,255),3)
-            
-            
-            ang = radians(self.theta_face+90)
-            # face_pos_x = toint( (path_pos[0] + cos(ang)*30))
-            # face_pos_y = toint( (path_pos[1] + sin(ang)*30))
-            # face_pos = (face_pos_x, face_pos_y)
-            
-            ang = radians(self.theta_face)
-            pt1_x = toint( path_x_pos + cos(ang)* 50)
-            pt1_y = toint( path_y_pos + sin(ang)* 50)
-            pt2_x = toint( path_x_pos - cos(ang)* 50)
-            pt2_y = toint( path_y_pos - sin(ang)* 50)
-            pt1 = (pt1_x, pt1_y)
-            pt2 = (pt2_x, pt2_y)
-            cv2.line(im,pt1,pt2,(0,0,0),4)
-            
-           
-            ang = radians(self.theta_path - 90)
-            pt1_x = toint( path_pos[0] + cos(ang) * 300)        
-            pt1_y = toint( path_pos[1] + sin(ang) * 300)        
-            pt = (pt1_x, pt1_y)
-            cv2.line(im,path_pos,pt,(0,0,255),4)
-            
-            ang = radians(self.theta_path+115)
-            ldr_pt_x = toint( pt[0] + cos(ang)*30)
-            ldr_pt_y = toint( pt[1] + sin(ang)*30)
-            ldr_pt = (ldr_pt_x,ldr_pt_y)
-            cv2.line(im,ldr_pt,pt,(0,0,255),4)
-            ang = radians(self.theta_path+60)
-            ldr_pt_x = toint( pt[0] + cos(ang)*30)
-            ldr_pt_y = toint( pt[1] + sin(ang)*30)
-            ldr_pt = (ldr_pt_x,ldr_pt_y)
-            cv2.line(im,ldr_pt,pt,(0,0,255),4)
-            
-            
-            
-            
-            ang = radians(self.theta_face - 90)
-            
-            pt1_x = toint( path_pos[0] + cos(ang) * 200)        
-            pt1_y = toint( path_pos[1] + sin(ang) * 200)        
-            pt = (pt1_x, pt1_y)
-            cv2.line(im,path_pos,pt,(0,0,0),4)
-            
-            ang = radians(self.theta_face+115)
-            ldr_pt_x = toint( pt[0] + cos(ang)*30)
-            ldr_pt_y = toint( pt[1] + sin(ang)*30)
-            ldr_pt = (ldr_pt_x,ldr_pt_y)
-            cv2.line(im,ldr_pt,pt,(0,0,0),4)
-            ang = radians(self.theta_face+60)
-            ldr_pt_x = toint( pt[0] + cos(ang)*30)
-            ldr_pt_y = toint( pt[1] + sin(ang)*30)
-            ldr_pt = (ldr_pt_x,ldr_pt_y)
-            cv2.line(im,ldr_pt,pt,(0,0,0),4)
-            
-            
-            
-            
-            
-            
-            
-            im = cv2.resize(im,None, None, fx = 0.52, fy=0.52)
-            
-            cv2.imshow("Trajectory",im)
-            x = cv2.waitKey(self.wk)
-            
-            rv = True
-            try:
-                if chr(x) in "xX":
-                    rv = False
-                    cv2.destroyAllWindows()
-                elif chr(x) in "sS":
-                    save_dir = Path(__file__).resolve().parent.joinpath("saved_imgs")
-                    save_dir.mkdir(exist_ok=True)
-                    fn = save_dir.joinpath(f"{self.shape_name}_PathAng{self.theta_path:.2f}_FaceAng{self.theta_face}".replace(".","p")+".png")
-                    print(str(fn))
-                    print("writing image")
-                    cv2.imwrite(str(fn),im)
-                # elif chr(x) in "cC":
-                #     cur_idx = list(club_loft_lookup.keys()).index(self.club_name)
-                    
-                #     if cur_idx == len(club_loft_lookup) -1:
-                #         cur_idx = 0
-                #     else:
-                #         cur_idx += 1
-                #     self.club_name = list(club_loft_lookup.keys())[cur_idx]
-                #     self.re_init(0.0,0.0)
-                
-                elif chr(x) == ",":
-                    self.theta_face -= 0.05
-                    if self.theta_face < -15:
-                        self.theta_face = -15.0
-                elif chr(x) == ".":
-                    self.theta_face += 0.05
-                    if self.theta_face > 15:
-                        self.theta_face = 15.0    
-                elif chr(x) == "<":
-                    self.theta_face -= 1
-                    if self.theta_face < -15:
-                        self.theta_face = -15.0
-                elif chr(x) == ">":
-                    self.theta_face += 1
-                    if self.theta_face > 15:
-                        self.theta_face = 15.0    
-                elif chr(x) == ";":
-                    self.theta_path -= 0.05
-                    if self.theta_path < -15:
-                        self.theta_path = -15.0
-                elif chr(x) == "'":
-                    self.theta_path += 0.05
-                    if self.theta_path > 15:
-                        self.theta_path = 15.0    
-                elif chr(x) == ":":
-                    self.theta_path -= 1
-                    if self.theta_path < -15:
-                        self.theta_path = -15.0
-                elif chr(x) == '"':
-                    self.theta_path += 1
-                    if self.theta_path > 15:
-                        self.theta_path = 15.0    
-                
-                if abs(self.theta_path) < 0.05:
-                    self.theta_path = 0.0
-                if abs(self.theta_face) < 0.05:
-                    self.theta_face = 0.0
-                
-            except BaseException:
-                pass
-        else:
-            rv = True
+        # if not self.data_start or self.wk == 0:
+        wd = 1080
+        ht = 1920
+        im = np.zeros((ht,wd,3)).astype("uint8")
         
-        self.append_data()
-        return rv
+        # color the whole image dark green to start
+        im[:,:] = DKGRN
+        
+        field_wd = toint(0.85 * wd)
+        field_ht = toint(0.8 * ht)
+        
+        og_x = toint(wd/2)
+        og_y = ht - toint(ht * 0.075)
+        
+        if not self.init_mpp:
+            # calculate meters per pixel based on 
+            mpp_wd = self.max_dev() * 2 / field_wd
+            mpp_ht = max(self.ypos_arr) / field_ht
+            self.mpp = max([mpp_wd, mpp_ht])
+            self.pin_pos = (og_x, og_y - toint( self.ypos_arr[-1] / self.mpp))
+            self.init_mpp = True
+            
+        
+        
+        
+        
+        
+        # draw the tee box
+        # it's absurdly big, get over it
+        tee_box_width = 25 # meters
+        tee_box_x1 = og_x - toint((tee_box_width/self.mpp))
+        tee_box_x2 = og_x + toint(tee_box_width/self.mpp)
+        
+        tee_box_len = 15 # meters
+        tee_box_y1 = og_y - toint((tee_box_len/self.mpp))
+        tee_box_y2 = og_y + toint(tee_box_len/self.mpp)
+        
+        # change the teebox area to a lighter green
+        tee_roi = im[tee_box_y1:tee_box_y2, tee_box_x1: tee_box_x2]
+        tee_roi[:,:] = LTGRN
+        
+        # draw the tee markers
+        tee_ht = len(tee_roi)
+        tee_wd = len(tee_roi[0])
+        
+        tee_marker_pos = (toint( tee_wd *0.1), toint( tee_ht/2))
+        cv2.circle(tee_roi,tee_marker_pos,15,BLUE, FILLED)
+        tee_marker_pos = (toint( tee_wd *0.9), toint( tee_ht/2))
+        cv2.circle(tee_roi,tee_marker_pos,15,BLUE, FILLED)
+        
+        
+        
+        # calculate the end point of the horizontal launch arrow
+        # og_x and og_y will change before we do this, just save them here
+        hld_x = toint( og_x + sin(radians(self.hld))*0.25 * ht)
+        hld_y = toint( og_y - cos(radians(self.hld))*0.25 * ht) 
+        
+        
+        # draw the green
+        # green and cup are also absurdly large - to show texture
+        green_radius = 28 # meters
+        green_pxrad = toint(green_radius/self.mpp)    
+        cv2.circle(im,self.pin_pos,green_pxrad,LTGRN,-1)
+        cup_radius = 1.5 # meters
+        cup_pxrad = toint(cup_radius/self.mpp)
+        cv2.circle(im,self.pin_pos,cup_pxrad,BLK,-1)
+        
+        # draw the pin
+        pin_top = (self.pin_pos[0]-toint(0.025*ht),self.pin_pos[1]-toint(0.05*ht))
+        cv2.line(im,self.pin_pos,pin_top,MDYLW,5)
+        
+        # draw the flag
+        flag_tip = (self.pin_pos[0]-toint(0.04*ht),self.pin_pos[1]-toint(0.012*ht))
+        for i in range(33,46):
+            pt = (self.pin_pos[0]-i,self.pin_pos[1]-(i*2))
+            cv2.line(im,flag_tip,pt,(0,0,255),5)
+
+        
+        # draw a dashed line down the center of the field
+        y_pos = self.pin_pos[1] - toint(ht * .110)
+        jump = 100
+        while True:
+            if y_pos+150 >= ht:
+                cv2.line(im,(og_x,y_pos),(og_x,ht),(125,125,125),4)
+                break
+            else:
+                cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),(125,125,125),4)
+            y_pos += 2 * jump
+        
+        
+        cv2.line(im,(og_x,og_y),(hld_x,hld_y),(0,255,255),2)
+        
+        ldr_x = toint( hld_x + cos(radians(self.hld + 60))*30)
+        ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
+        
+        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
+        ldr_x = toint( hld_x - cos(radians(self.hld - 60))*30)
+        ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
+        
+        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
+        
+        
+        
+        
+        py, px = None, None
+        for i in range(len(self.xpos_arr)):
+            x = og_x + toint(self.xpos_arr[i]/self.mpp)
+            y = og_y - toint(self.ypos_arr[i]/self.mpp)
+            
+            if i > 0:
+                cv2.line(im,(x,y),(px,py),MGTA,3)
+            
+            px = copy(x)
+            py = copy(y)
+
+        
+        # # maybe later - draw the side-view to see the apex
+        # apex_mpp = self.mpp*2
+        # apex_og_x = toint( (wd - field_wd)/2)
+        # apex_og_y = self.pin_pos[1] - toint(0.015*ht)
+        
+        # end_apex_x = apex_og_x + toint( self.ypos_arr[-1] / apex_mpp)
+        # while end_apex_x > toint( wd - (wd-field_wd) / 2):
+        #     apex_mpp *=1.01
+        #     end_apex_x = apex_og_x + toint( self.ypos_arr[-1] / apex_mpp)            
+        
+        
+        
+        # for i in range(len(self.xpos_arr)):
+        #     x = apex_og_x + toint( self.ypos_arr[i] / apex_mpp)
+        #     y = apex_og_y - toint( self.zpos_arr[i] / apex_mpp)
+        #     if i > 0:
+        #         cv2.line(im,(x,y),(px,py),MGTA,3)
+        #     px = copy(x)
+        #     py = copy(y)
+        # cv2.line(im,(apex_og_x,apex_og_y),(px,py),BLK,2)
+        
+        
+        # print(hld_x, hld_y)
+        
+        
+        
+        
+        ft = cv2.FONT_HERSHEY_SIMPLEX
+        clr = WHT
+        sz = 1.2
+        ypos = toint(0.35*ht)
+        jump = 45
+        face_to_path = self.theta_face - self.theta_path
+        pct = 100 * self.xpos_arr[-1] / self.ypos_arr[-1]
+        face_path_pct = 100 * self.theta_face / self.theta_path if abs(self.theta_path) >= 0.04 else "?"
+        texts = [
+            # f"Club: {self.club_name}",
+            f"Shot: {self.shape_name}",
+            f"Path: {self.theta_path:.2f} dg",
+            f"Face To Path: {face_to_path:.2f} dg",
+            f"Face: {self.theta_face:.2f} dg",
+            f"Face:Path: {face_path_pct:.2f} %" if abs(self.theta_path) >= 0.04 else "Face:Path: N/A %",
+            # f"Apex: {m2f(max(self.zpos_arr)):.2f} ft",
+            f"Carry: {m2y(max(self.ypos_arr)):.2f} yd",
+            f"Off-Center Pct: {pct:.2f}%",
+            f"Off-Center: {m2y(self.xpos_arr[-1]):.2f} yd",
+            f"Max Dev.: {self.max_dev():.2f} yd",
+            # f"Dyn. Loft: {self.dyn_loft:.2f} dg",
+            # f"Launch Ang: {self.vla:.2f} dg",
+            # f"Swing Speed: {self.swing_speed:.0f} mph",
+            # f"Smash Fac.: {self.smash_factor:.2f}",
+            # f"Ball Speed: {self.swing_speed * self.smash_factor:.0f} mph"
+            
+            
+        ]
+        for t in texts:
+            cv2.putText(im,t, (10,ypos),ft,sz,clr,2)
+            
+            ypos += jump
+        
+        
+        
+        
+        path_rad = toint(0.125*ht)
+        
+        path_pt = [toint( 0.05*wd), toint( 0.8 * ht)]
+        cv2.circle(im,path_pt,path_rad,(0,0,255),4)
+        cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),(0,0,255),4)
+        roi = im[toint( 0.8*ht)-(path_rad+10):toint( 0.8*ht)+(path_rad+10), :toint( 0.05*wd)-1]
+        roi[:,:] = (30,125,10)
+        
+        
+        
+        
+        ang = radians(self.theta_path)
+        
+        path_x_pos = toint( (path_pt[0] + cos(ang)*path_rad))
+        path_y_pos = toint( (path_pt[1] + sin(ang)*path_rad))
+        
+        path_pos = (path_x_pos,path_y_pos)
+        cv2.circle(im,path_pos,15,(255,255,255),-1)
+        
+        path_pt[0] -= 40
+        path_pt[1] -= 20
+        cv2.putText(im,"Club Path", path_pt,ft,1.4,(0,0,255),2)
+        path_pt[1] += 70
+        cv2.putText(im,"Club Face", path_pt,ft,1.4,(0,0,0),2)
+        
+        
+        
+        
+        
+        path_pos = (path_x_pos,path_y_pos)
+        cv2.putText(im,"Hztl Launch Dir", (675,path_pt[1]-55),ft,1.4,(0,255,255),3)
+        cv2.putText(im,f"{self.hld:.2f} dg", (675,path_pt[1]-10),ft,1.4,(0,255,255),3)
+        
+        
+        ang = radians(self.theta_face+90)
+        # face_pos_x = toint( (path_pos[0] + cos(ang)*30))
+        # face_pos_y = toint( (path_pos[1] + sin(ang)*30))
+        # face_pos = (face_pos_x, face_pos_y)
+        
+        ang = radians(self.theta_face)
+        pt1_x = toint( path_x_pos + cos(ang)* 50)
+        pt1_y = toint( path_y_pos + sin(ang)* 50)
+        pt2_x = toint( path_x_pos - cos(ang)* 50)
+        pt2_y = toint( path_y_pos - sin(ang)* 50)
+        pt1 = (pt1_x, pt1_y)
+        pt2 = (pt2_x, pt2_y)
+        cv2.line(im,pt1,pt2,(0,0,0),4)
+        
+       
+        ang = radians(self.theta_path - 90)
+        pt1_x = toint( path_pos[0] + cos(ang) * 300)        
+        pt1_y = toint( path_pos[1] + sin(ang) * 300)        
+        pt = (pt1_x, pt1_y)
+        cv2.line(im,path_pos,pt,(0,0,255),4)
+        
+        ang = radians(self.theta_path+115)
+        ldr_pt_x = toint( pt[0] + cos(ang)*30)
+        ldr_pt_y = toint( pt[1] + sin(ang)*30)
+        ldr_pt = (ldr_pt_x,ldr_pt_y)
+        cv2.line(im,ldr_pt,pt,(0,0,255),4)
+        ang = radians(self.theta_path+60)
+        ldr_pt_x = toint( pt[0] + cos(ang)*30)
+        ldr_pt_y = toint( pt[1] + sin(ang)*30)
+        ldr_pt = (ldr_pt_x,ldr_pt_y)
+        cv2.line(im,ldr_pt,pt,(0,0,255),4)
+        
+        
+        
+        
+        ang = radians(self.theta_face - 90)
+        
+        pt1_x = toint( path_pos[0] + cos(ang) * 200)        
+        pt1_y = toint( path_pos[1] + sin(ang) * 200)        
+        pt = (pt1_x, pt1_y)
+        cv2.line(im,path_pos,pt,(0,0,0),4)
+        
+        ang = radians(self.theta_face+115)
+        ldr_pt_x = toint( pt[0] + cos(ang)*30)
+        ldr_pt_y = toint( pt[1] + sin(ang)*30)
+        ldr_pt = (ldr_pt_x,ldr_pt_y)
+        cv2.line(im,ldr_pt,pt,(0,0,0),4)
+        ang = radians(self.theta_face+60)
+        ldr_pt_x = toint( pt[0] + cos(ang)*30)
+        ldr_pt_y = toint( pt[1] + sin(ang)*30)
+        ldr_pt = (ldr_pt_x,ldr_pt_y)
+        cv2.line(im,ldr_pt,pt,(0,0,0),4)
+        
+        
+        
+        
+        
+        
+        
+        
+        im = cv2.resize(im,None, None, fx = 0.52, fy=0.52)
+        
+        final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
+        
+        st.image(final_rgb_image, use_column_width=True)
+        
+        # cv2.imshow("Trajectory",im)
+        # x = cv2.waitKey(self.wk)
+        
+        # rv = True
+            
+        # else:
+        #     rv = True
+        
+        # self.append_data()
+        # return rv
             
             
     def data_to_csv(self):
@@ -675,38 +627,38 @@ class GolfTrajectoryGenerator:
             
 if __name__ == "__main__":
     
-    if 0:
-        theta_path = -11.5
-        theta_face = 3.8
-        gtg = GolfTrajectoryGenerator(theta_path, theta_face,False,0)
-        gtg.calculate_trajectory()
+    # if 0:
+    #     theta_path = -11.5
+    #     theta_face = 3.8
+    #     gtg = GolfTrajectoryGenerator(theta_path, theta_face,False,0)
+    #     gtg.calculate_trajectory()
+    #     gtg.draw_trajectory()
+    #     # cv2.destroyAllWindows()     
+        
+    # else:
+    end = False
+    i_end = 241
+    j_end = 161
+    gtg = None
+    theta_path = 0.0
+    theta_face = 0.0
+    while True:
+    
+        if end:
+            break
+        
+        if gtg is None:
+            gtg = GolfTrajectoryGenerator(theta_path, theta_face,False,0)
+        # else:
+        #     gtg.re_init(theta_path, theta_face,0)
+        gtg.calc_flight()
         gtg.draw_trajectory()
-        cv2.destroyAllWindows()     
-        
-    else:
-        end = False
-        i_end = 241
-        j_end = 161
-        gtg = None
-        theta_path = 0.0
-        theta_face = 0.0
-        while True:
-        
-            if end:
-                break
-            
-            if gtg is None:
-                gtg = GolfTrajectoryGenerator(theta_path, theta_face,False,0)
-            # else:
-            #     gtg.re_init(theta_path, theta_face,0)
-            gtg.calc_flight()
-            res = gtg.draw_trajectory()
-            if not res:
-                end = True
-            if end:
-                break
-        cv2.destroyAllWindows()
-        gtg.data_to_csv()        
+        # if not res:
+        #     end = True
+        # if end:
+        #     break
+        # cv2.destroyAllWindows()
+        # gtg.data_to_csv()        
     
     
     
