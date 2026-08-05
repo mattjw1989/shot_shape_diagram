@@ -646,23 +646,23 @@ if __name__ == "__main__":
     #     # cv2.destroyAllWindows()     
         
     # else:
-    end = False
-    i_end = 241
-    j_end = 161
-    gtg = None
-    theta_path = 0.0
-    theta_face = 0.0
-    while True:
+    # end = False
+    # i_end = 241
+    # j_end = 161
+    # gtg = None
+    # theta_path = 0.0
+    # theta_face = 0.0
+    # while True:
     
-        if end:
-            break
+    #     if end:
+    #         break
         
-        if gtg is None:
-            gtg = GolfTrajectoryGenerator(theta_path, theta_face,False,0)
-        # else:
-        #     gtg.re_init(theta_path, theta_face,0)
-        gtg.calc_flight()
-        gtg.draw_trajectory()
+    #     if gtg is None:
+    gtg = GolfTrajectoryGenerator(0.0, 0.0,False,0)
+    # else:
+    #     gtg.re_init(theta_path, theta_face,0)
+    gtg.calc_flight()
+    gtg.draw_trajectory()
         # if not res:
         #     end = True
         # if end:
