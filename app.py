@@ -151,15 +151,15 @@ with col1:
 
     # --- FACE ANGLE CONTROLS ---
     face_angle = st.slider("Face Angle (°)", min_value=-15.0, value=0.0, max_value=15.0, step=nudge_val, key="face_val")
-    face_btn1, face_btn2 = st.columns(2)
+    face_btn3,face_btn1, face_btn2,face_btn4 = st.columns(4)
     with face_btn1:
         st.button("⬅️ 0.05°", key="nf_left", on_click=nudge_face, args=(-nudge_val,))
     with face_btn2:
         st.button("0.05° ➡️", key="nf_right", on_click=nudge_face, args=(nudge_val,))
-    face_btn3, face_btn4 = st.columns(2)
-    with face_btn1:
+    
+    with face_btn3:
         st.button("⬅️ 1.0°", key="bnf_left", on_click=nudge_face, args=(-1.0,))
-    with face_btn2:
+    with face_btn4:
         st.button("1.0° ➡️ ", key="bnf_right", on_click=nudge_face, args=(1.0,))
         
     # Connect the slider to the background memory key
