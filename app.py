@@ -87,6 +87,8 @@ def nudge_face(amount):
 
 
 
+
+
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
 with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"):
@@ -175,7 +177,7 @@ with col1:
     
 with col3:
     st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 1080, step =10, width=400)
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 1080, step =10, width=400, key="scale_width")
     
 
 
