@@ -133,7 +133,7 @@ with col1:
         st.button("➡️ Nudge Path Right", key="np_right", on_click=nudge_path, args=(nudge_val,))
             
     # Connect the slider to the background memory key
-    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=nudge_val, key="path_val")
+    club_path = st.slider("Club Path (°)", min_value=-15.0, value=0.0, max_value=15.0, step=nudge_val, key="path_val")
 
     st.write("---") # Visual divider
 
@@ -145,7 +145,7 @@ with col1:
         st.button("➡️ Nudge Face Right", key="nf_right", on_click=nudge_face, args=(nudge_val,))
             
     # Connect the slider to the background memory key
-    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=nudge_val, key="face_val")
+    face_angle = st.slider("Face Angle (°)", min_value=-15.0, value=0.0, max_value=15.0, step=nudge_val, key="face_val")
 
     st.write("---") # Visual divider
     
