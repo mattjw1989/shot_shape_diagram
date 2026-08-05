@@ -72,7 +72,7 @@ if "face_val" not in st.session_state:
     st.session_state.face_val = 0.0
 
 if "scale_width" not in st.session_state:
-    st.session_state.scale_width = 1080
+    st.session_state.scale_width = 450
     
 # 2. DEFINE THE CALLBACK FUNCTIONS (This handles the reset safely in the background)
 def reset_angles_callback():
@@ -177,7 +177,7 @@ with col1:
     
 with col1:
     st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 1080, step =10, key="scale_width")
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 450, step =10, key="scale_width")
     
 
 
