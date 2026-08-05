@@ -70,6 +70,11 @@ if "path_val" not in st.session_state:
     st.session_state.path_val = 0.0
 if "face_val" not in st.session_state:
     st.session_state.face_val = 0.0
+    
+if st.sidebar.button("🔄 Reset Angles to Zero", use_container_width=True):
+    st.session_state["path_val"] = 0.0
+    st.session_state["face_val"] = 0.0
+    st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
 
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
@@ -141,11 +146,11 @@ with col1:
 
     st.write("---") # Visual divider
     
-    # --- GLOBAL RESET BUTTON ---
-    if st.button("🔄 Reset Angles to Zero", use_container_width=True):
-        st.session_state["path_val"] = 0.0
-        st.session_state["face_val"] = 0.0
-        st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
+    # # --- GLOBAL RESET BUTTON ---
+    # if st.button("🔄 Reset Angles to Zero", use_container_width=True):
+    #     st.session_state["path_val"] = 0.0
+    #     st.session_state["face_val"] = 0.0
+    #     st.rerun()  # Instantly reboots the loop from line 1 with 0.0 locked in
         
     
     
