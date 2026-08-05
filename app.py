@@ -280,8 +280,8 @@ class GolfTrajectoryGenerator:
         
         self.classify_shot_shape()
         # if not self.data_start or self.wk == 0:
-        wd = 540
-        ht = 960
+        wd = 1080
+        ht = 1920
         im = np.zeros((ht,wd,3)).astype("uint8")
         
         # color the whole image dark green to start
