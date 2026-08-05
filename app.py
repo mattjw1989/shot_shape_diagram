@@ -491,7 +491,7 @@ class GolfTrajectoryGenerator:
         ldr_x = toint( hld_x - cos(radians(self.hld - 60))*30)
         ldr_y = toint( hld_y + sin(radians(self.hld + 60))*30)
         
-        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),(0,255,255),2)
+        cv2.line(im,(hld_x,hld_y),(ldr_x,ldr_y),YLW,2)
         
         
         
@@ -601,8 +601,8 @@ class GolfTrajectoryGenerator:
         
         
         path_pos = (path_x_pos,path_y_pos)
-        cv2.putText(im,"Hztl Launch Dir", (675,path_pt[1]-55),ft,1.4,(0,255,255),3)
-        cv2.putText(im,f"{self.hld:.2f} dg", (675,path_pt[1]-10),ft,1.4,(0,255,255),3)
+        cv2.putText(im,"Hztl Launch Dir", (675,path_pt[1]-55),ft,1.4,YLW,3)
+        cv2.putText(im,f"{self.hld:.2f} dg", (675,path_pt[1]-10),ft,1.4,YLW,3)
         
         
         ang = radians(self.theta_face+90)
@@ -624,18 +624,18 @@ class GolfTrajectoryGenerator:
         pt1_x = toint( path_pos[0] + cos(ang) * 300)        
         pt1_y = toint( path_pos[1] + sin(ang) * 300)        
         pt = (pt1_x, pt1_y)
-        cv2.line(im,path_pos,pt,(0,0,255),4)
+        cv2.line(im,path_pos,pt,OJ,4)
         
         ang = radians(self.theta_path+115)
         ldr_pt_x = toint( pt[0] + cos(ang)*30)
         ldr_pt_y = toint( pt[1] + sin(ang)*30)
         ldr_pt = (ldr_pt_x,ldr_pt_y)
-        cv2.line(im,ldr_pt,pt,(0,0,255),4)
+        cv2.line(im,ldr_pt,pt,OJ,4)
         ang = radians(self.theta_path+60)
         ldr_pt_x = toint( pt[0] + cos(ang)*30)
         ldr_pt_y = toint( pt[1] + sin(ang)*30)
         ldr_pt = (ldr_pt_x,ldr_pt_y)
-        cv2.line(im,ldr_pt,pt,(0,0,255),4)
+        cv2.line(im,ldr_pt,pt,OJ,4)
         
         
         
