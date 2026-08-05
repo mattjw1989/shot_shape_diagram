@@ -65,8 +65,17 @@ smash_factor_lookup = {
         "LW": 1.06    
     }
 
+st.title("Golf Shot Shape Simulator")
+st.write("Adjust the variables on the left to see the shot shape change in real-time.")
 club_path = st.slider("Club Path (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
-face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+col1, col2 = st.columns([1, 2])
+with col1:
+    st.subheader("Swing Inputs")
+    face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+    st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
+
+
+
 # rsz_fac = st.slider("Scale", min_value=0.1, max_value=1.0, value=0.3, step=0.01)
 
 class GolfTrajectoryGenerator:
@@ -543,10 +552,10 @@ class GolfTrajectoryGenerator:
         
         
         # im = cv2.resize(im,None, None, fx = rsz_fac, fy=rsz_fac)
-        
-        final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
-        
-        st.image(final_rgb_image, width='stretch')
+        with col2:
+            final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
+            
+            st.image(final_rgb_image, width='stretch')
         
         # cv2.imshow("Trajectory",im)
         # x = cv2.waitKey(self.wk)
