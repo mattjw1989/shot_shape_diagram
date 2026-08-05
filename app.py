@@ -120,30 +120,32 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
 st.write("---")  # Adds a clean visual divider line
 st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
 col1, col2, col3,col4 = st.columns([1, 2, 3, 1])
+nudge_val = 0.05
+
 with col1:
     st.subheader("Swing Inputs")
     
     # --- CLUB PATH CONTROLS ---
     path_btn1, path_btn2 = st.columns(2)
     with path_btn1:
-        st.button("⬅️ Nudge Path Left", key="np_left", on_click=nudge_path, args=(-0.1,))
+        st.button("⬅️ Nudge Path Left", key="np_left", on_click=nudge_path, args=(-nudge_val,))
     with path_btn2:
-        st.button("➡️ Nudge Path Right", key="np_right", on_click=nudge_path, args=(0.1,))
+        st.button("➡️ Nudge Path Right", key="np_right", on_click=nudge_path, args=(nudge_val,))
             
     # Connect the slider to the background memory key
-    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=0.1, key="path_val")
+    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=nudge_val, key="path_val")
 
     st.write("---") # Visual divider
 
     # --- FACE ANGLE CONTROLS ---
     face_btn1, face_btn2 = st.columns(2)
     with face_btn1:
-        st.button("⬅️ Nudge Face Left", key="nf_left", on_click=nudge_face, args=(-0.1,))
+        st.button("⬅️ Nudge Face Left", key="nf_left", on_click=nudge_face, args=(-nudge_val,))
     with face_btn2:
-        st.button("➡️ Nudge Face Right", key="nf_right", on_click=nudge_face, args=(0.1,))
+        st.button("➡️ Nudge Face Right", key="nf_right", on_click=nudge_face, args=(nudge_val,))
             
     # Connect the slider to the background memory key
-    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=0.1, key="face_val")
+    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=nudge_val, key="face_val")
 
     st.write("---") # Visual divider
     
@@ -155,7 +157,7 @@ with col1:
     
 with col3:
     st.subheader("Adjust Image Size")
-    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10, width=400)
+    scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 750, step =10, width=400)
     
 
 
