@@ -65,8 +65,8 @@ smash_factor_lookup = {
         "LW": 1.06    
     }
 
-club_path = st.slider("Club Path (degrees)", min_value=-15.0, max_value=15.0, value=6.0, step=0.05)
-face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=2.1, step=0.05)
+club_path = st.slider("Club Path (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+face_angle = st.slider("Face Angle (degrees)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
 
 
 class GolfTrajectoryGenerator:
