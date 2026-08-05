@@ -80,10 +80,14 @@ def reset_angles_callback():
     st.session_state["face_val"] = 0.0
 
 def nudge_path(amount):
-    st.session_state["path_val"] = round(st.session_state["path_val"] + amount, 2)
+    
+    if round(st.session_state["path_val"] + amount, 2) <= 15 and round(st.session_state["path_val"] + amount, 2) >= 0:
+        st.session_state["path_val"] = round(st.session_state["path_val"] + amount, 2)
 
 def nudge_face(amount):
-    st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
+    if round(st.session_state["face_val"] + amount, 2) <= 15 and round(st.session_state["face_val"] + amount, 2) >= 0:
+        st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
+    # st.session_state["face_val"] = round(st.session_state["face_val"] + amount, 2)
 
 
 
