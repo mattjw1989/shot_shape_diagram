@@ -70,6 +70,9 @@ if "path_val" not in st.session_state:
     st.session_state.path_val = 0.0
 if "face_val" not in st.session_state:
     st.session_state.face_val = 0.0
+
+if "scale_width" not in st.session.state:
+    st.session_state.scale_width = 1080
     
 # 2. DEFINE THE CALLBACK FUNCTIONS (This handles the reset safely in the background)
 def reset_angles_callback():
@@ -658,7 +661,7 @@ class GolfTrajectoryGenerator:
         with col2:
             final_rgb_image = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
             
-            st.image(final_rgb_image, width=scale_width)    
+            st.image(final_rgb_image, width=st.session_state.scale_width)    
         
         # cv2.imshow("Trajectory",im)
         # x = cv2.waitKey(self.wk)
