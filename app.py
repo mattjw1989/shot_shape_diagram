@@ -588,9 +588,9 @@ class GolfTrajectoryGenerator:
         
         path_pt[0] -= 40
         path_pt[1] -= 20
-        cv2.putText(im,"Club Path", path_pt,ft,1.4,(0,0,255),2)
+        cv2.putText(im,"Club Path", path_pt,ft,1.4,(0,0,255),1)
         path_pt[1] += 70
-        cv2.putText(im,"Club Face", path_pt,ft,1.4,(0,0,0),2)
+        cv2.putText(im,"Club Face", path_pt,ft,1.4,(0,0,0),1)
         
         
         
