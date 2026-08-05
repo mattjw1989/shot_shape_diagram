@@ -478,7 +478,7 @@ class GolfTrajectoryGenerator:
                 cv2.line(im,(og_x,y_pos),(og_x,ht),MDGREY,4)
                 break
             else:
-                cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),MDR,4)
+                cv2.line(im,(og_x,y_pos),(og_x,y_pos+jump),MDGREY,4)
             y_pos += 2 * jump
         
         
