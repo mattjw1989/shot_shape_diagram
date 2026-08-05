@@ -27,6 +27,7 @@ m2y = lambda meters: m2f(meters) / 3
 DKGRN = (30,125,10)
 RED = (0,0,255)
 DKRED = (0,0,128)
+OJ = (0,128,255)
 BLUE = (255,0,0)
 MGTA = (255,0,255)
 BLK = (0,0,0)
@@ -571,8 +572,8 @@ class GolfTrajectoryGenerator:
         path_rad = toint(0.125*ht)
         
         path_pt = [toint( 0.05*wd), toint( 0.8 * ht)]
-        cv2.circle(im,path_pt,path_rad,DKRED,4)
-        cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),DKRED,4)
+        cv2.circle(im,path_pt,path_rad,OJ,4)
+        cv2.line(im,path_pt,(path_pt[0]+path_rad,path_pt[1]),OJ,4)
         roi = im[toint( 0.8*ht)-(path_rad+10):toint( 0.8*ht)+(path_rad+10), :toint( 0.05*wd)-1]
         roi[:,:] = (30,125,10)
         
@@ -589,7 +590,7 @@ class GolfTrajectoryGenerator:
         
         path_pt[0] -= 40
         path_pt[1] -= 20
-        cv2.putText(im,"Club Path", path_pt,ft,1.4,DKRED,1)
+        cv2.putText(im,"Club Path", path_pt,ft,1.4,OJ,1)
         path_pt[1] += 70
         cv2.putText(im,"Club Face", path_pt,ft,1.4,BLK,1)
         
