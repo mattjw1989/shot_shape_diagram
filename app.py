@@ -65,6 +65,12 @@ smash_factor_lookup = {
         "LW": 1.06    
     }
 
+
+if "path_val" not in st.session_state:
+    st.session_state.path_val = 6.0
+if "face_val" not in st.session_state:
+    st.session_state.face_val = 2.1
+
 st.title("Golf Shot Shape Simulator")
 st.write("Adjust the variables on the left to see the shot shape change in real-time.")
 with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"):
@@ -100,11 +106,48 @@ with st.expander("📘 How to Use This Simulator & Master the Face-to-Path Rule"
     """)
 st.write("---")  # Adds a clean visual divider line
 st.set_page_config(page_title="Golf Shot Shape Simulator", layout="wide")
-col1, col2, col3 = st.columns([1, 2, 3])
+col1, col2, col3,col4 = st.columns([1, 2, 3, 1])
 with col1:
     st.subheader("Swing Inputs")
-    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
-    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, value=0.0, step=0.05)
+    st.subheader("Swing Inputs")
+    
+    # --- CLUB PATH CONTROLS ---
+    # Create tiny horizontal side-by-side columns for the path nudge buttons
+    path_btn1, path_btn2 = st.columns(2)
+    with path_btn1:
+        if st.button("⬅️ Nudge Path Left", key="np_left"):
+            st.session_state.path_val = round(st.session_state.path_val - 0.05, 2)
+    with path_btn2:
+        if st.button("➡️ Nudge Path Right", key="np_right"):
+            st.session_state.path_val = round(st.session_state.path_val + 0.05, 2)
+            
+    # Connect the slider directly to the session_state memory
+    club_path = st.slider("Club Path (°)", min_value=-15.0, max_value=15.0, step=0.05, key="path_val")
+
+    st.write("---") # Visual divider
+
+    # --- FACE ANGLE CONTROLS ---
+    # Create tiny horizontal side-by-side columns for the face nudge buttons
+    face_btn1, face_btn2 = st.columns(2)
+    with face_btn1:
+        if st.button("⬅️ Nudge Face Left", key="nf_left"):
+            st.session_state.face_val = round(st.session_state.face_val - 0.05, 2)
+    with face_btn2:
+        if st.button("➡️ Nudge Face Right", key="nf_right"):
+            st.session_state.face_val = round(st.session_state.face_val + 0.05, 2)
+            
+    # Connect the slider directly to the session_state memory
+    face_angle = st.slider("Face Angle (°)", min_value=-15.0, max_value=15.0, step=0.05, key="face_val")
+
+    st.write("---") # Visual divider
+    
+    # --- GLOBAL RESET BUTTON ---
+    if st.button("🔄 Reset Angles to Zero", use_container_width=True):
+        st.session_state.path_val = 0.0
+        st.session_state.face_val = 0.0
+        st.rerun() # Forces an instant refresh to clear the screen layout
+    
+    
 with col3:
     st.subheader("Adjust Image Size")
     scale_width = st.slider("Image Width (px)", min_value = 100, max_value = 1080, value = 500, step =10)
